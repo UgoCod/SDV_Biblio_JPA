@@ -2,6 +2,8 @@ package sdv.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "LIVRE")
 public class Livre {
@@ -14,6 +16,15 @@ public class Livre {
 
     @Column(name = "AUTEUR")
     private String auteur;
+
+    @ManyToMany(mappedBy="livres", cascade = CascadeType.PERSIST)
+    private Set<Emprunt> emprunts;
+
+    public Livre(String titre, String auteur, Set<Emprunt> emprunts) {
+        this.titre = titre;
+        this.auteur = auteur;
+        this.emprunts = emprunts;
+    }
 
     public Livre() {
     }
