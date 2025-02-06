@@ -2,6 +2,7 @@ package sdv.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,14 +19,17 @@ public class Client {
     @Column(name = "PRENOM")
     private String prenom;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     private Set<Emprunt> emprunts;
 
+    {
+        emprunts = new HashSet<>();
+    }
 
     public Client() {
     }
 
-    public Client(String nom, String prenom, Set<Emprunt> emprunts) {
+    public Client(String nom, String prenom) {
         this.nom = nom;
         this.prenom = prenom;
         this.emprunts = emprunts;

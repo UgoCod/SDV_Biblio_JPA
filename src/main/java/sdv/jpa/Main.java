@@ -41,19 +41,27 @@ public class Main {
 
             System.out.println("----------------------------------");
 
-            Client client2 = em.find(Client.class, 2);
-            Set<Emprunt> emprunts2 = client2.getEmprunts();
-
-            System.out.println("Client: " + client2.getNom() + " " + client2.getPrenom());
-            for (Emprunt emprunt : emprunts2) {
-                for (Livre livre : emprunt.getLivres()) {
-                    System.out.println("    - " + livre.getTitre());
-                }
-            }
-
-            Livre livre4 = new Livre("Les Vertus de l'échec", "Charles Pépin", emprunts2);
+            Livre livre4 = new Livre();
+            livre4.setTitre("Livre 1");
+            livre4.setAuteur("Charles Pépine");
             em.persist(livre4);
 
+
+            Client clientAPersister = new Client("Jonh", "Doe");
+            em.persist(clientAPersister);
+
+            Emprunt emprunt1 = new Emprunt();
+            emprunt1.setDate_debut(LocalDateTime.of(2020, 1, 1, 1, 1));
+            emprunt1.setDate_fin(LocalDateTime.of(2020, 1, 1, 1, 1));
+            emprunt1.setDelai(23);
+            emprunt1.setClient(clientAPersister);
+
+            clientAPersister.getEmprunts().add(emprunt1);
+
+            emprunt1.ajouterLivre(livre4);
+
+
+            em.persist(emprunt1);
 
             em.getTransaction().commit();
         } catch (Exception e){

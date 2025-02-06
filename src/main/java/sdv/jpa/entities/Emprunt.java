@@ -3,6 +3,7 @@ package sdv.jpa.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -26,12 +27,16 @@ public class Emprunt {
     @JoinColumn(name = "ID_CLIENT")
     private Client client;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "COMPO",
         joinColumns = @JoinColumn(name = "ID_EMP", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "ID_LIV", referencedColumnName = "id")
     )
     private Set<Livre> livres;
+
+    {
+        livres = new HashSet<>();
+    }
 
     public Emprunt() {
     }
@@ -81,7 +86,13 @@ public class Emprunt {
     }
 
     public void setClient(Client client) {
+        if (client != null) {
+            this.client.getEmprunts().remove(this);
+        }
         this.client = client;
+        if (this.client != null) {
+            this.client.getEmprunts().add(this);
+        }
     }
 
     public Set<Livre> getLivres() {
@@ -91,4 +102,20 @@ public class Emprunt {
     public void setLivres(Set<Livre> livres) {
         this.livres = livres;
     }
+
+    public void ajouterLivre(Livre livre) {
+        if (livre != null) {
+            this.livres.add(livre);
+            livre.getEmprunts().add(this);
+        }
+    }
+
+    public void supprimerLivre(Livre livre) {
+        if (livre != null) {
+            this.livres.remove(livre);
+            livre.getEmprunts().remove(this);
+        }
+    }
+
+
 }

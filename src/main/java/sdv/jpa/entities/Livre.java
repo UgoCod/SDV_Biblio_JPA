@@ -2,6 +2,7 @@ package sdv.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -9,6 +10,7 @@ import java.util.Set;
 public class Livre {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "TITRE")
@@ -17,8 +19,12 @@ public class Livre {
     @Column(name = "AUTEUR")
     private String auteur;
 
-    @ManyToMany(mappedBy="livres", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy="livres")
     private Set<Emprunt> emprunts;
+
+    {
+        emprunts = new HashSet<>();
+    }
 
     public Livre(String titre, String auteur, Set<Emprunt> emprunts) {
         this.titre = titre;
@@ -51,5 +57,13 @@ public class Livre {
 
     public void setAuteur(String auteur) {
         this.auteur = auteur;
+    }
+
+    public Set<Emprunt> getEmprunts() {
+        return emprunts;
+    }
+
+    public void setEmprunts(Set<Emprunt> emprunts) {
+        this.emprunts = emprunts;
     }
 }
